@@ -1,0 +1,15 @@
+static ssize_t mychardev_read(struct file *file, char __user *buf, size_t count, loff_t *offset)
+{
+    uint8_t *data = "Hello from the kernel world!\n";
+    size_t datalen = strlen(data);
+
+    if (count > datalen) {
+        count = datalen;
+    }
+
+    if (copy_to_user(buf, data, count)) {
+        return -EFAULT;
+    }
+
+    return count;
+}
