@@ -1,0 +1,23 @@
+static ssize_t mychardev_write(struct file *file, const char __user *buf, size_t count, loff_t *offset)
+{
+    size_t maxdatalen = 30, ncopied;
+    uint8_t databuf[maxdatalen];
+
+    if (count < maxdatalen) {
+        maxdatalen = count;
+    }
+
+    ncopied = copy_from_user(databuf, buf, maxdatalen);
+
+    if (ncopied == 0) {
+        printk("Copied %zd bytes from the user\n", maxdatalen);
+    } else {
+        printk("Could't copy %zd bytes from the user\n", ncopied);
+    }
+
+    databuf[maxdatalen] = 0;
+
+    printk("Data from the user: %s\n", databuf);
+
+    return count;
+}
